@@ -3,6 +3,7 @@ import { Shield, Database, Cloud, Zap, BookOpen, ArrowRight } from 'lucide-react
 import SSLHandshakeDiagram from './security/ssl_handshake'
 import HttpVerbsDiagram from './networking/http-verbs-diagram'
 import SSOGuide from './security/sso-interactive-guide'
+import MultipartVoiceGuide from './networking/multipart-voice-guide'
 import './App.css'
 
 function App() {
@@ -17,7 +18,8 @@ function App() {
       color: 'teal',
       description: 'HTTP, TCP/IP, routing and protocols',
       concepts: [
-        { id: 'http_verbs', name: 'HTTP Verbs', component: HttpVerbsDiagram }
+        { id: 'http_verbs', name: 'HTTP Verbs', component: HttpVerbsDiagram },
+        { id: 'multipart_voice', name: 'Multipart Voice Requests', component: MultipartVoiceGuide }
       ]
     },
     {
