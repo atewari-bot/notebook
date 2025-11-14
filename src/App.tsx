@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Shield, Database, Cloud, Zap, BookOpen, ArrowRight } from 'lucide-react'
 import SSLHandshakeDiagram from './security/ssl_handshake'
+import HttpVerbsDiagram from './http/http-verbs-diagram'
 import './App.css'
 
 function App() {
@@ -8,6 +9,16 @@ function App() {
   const [activeConcept, setActiveConcept] = useState<string | null>(null)
 
   const categories = [
+    {
+      id: 'http',
+      name: 'HTTP',
+      icon: Database,
+      color: 'teal',
+      description: 'HTTP methods, status codes, request/response lifecycle',
+      concepts: [
+        { id: 'http_verbs', name: 'HTTP Verbs', component: HttpVerbsDiagram }
+      ]
+    },
     {
       id: 'security',
       name: 'Security',
@@ -44,18 +55,13 @@ function App() {
     }
   ]
 
-  const handleCategoryClick = (categoryId: string) => {
-    setActiveCategory(activeCategory === categoryId ? null : categoryId)
-    setActiveConcept(null)
-  }
-
   const handleConceptClick = (conceptId: string) => {
     setActiveConcept(conceptId)
   }
 
   const handleBackToCategories = () => {
+    // Keep the active category so the user returns to the category's concept list
     setActiveConcept(null)
-    setActiveCategory(null)
   }
 
   const renderConcept = () => {
@@ -72,7 +78,7 @@ function App() {
                 onClick={handleBackToCategories}
                 className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                ← Back to Categories
+                ← Back to Notebooks
               </button>
               <div className="text-sm text-gray-500">
                 {category?.name} / {concept.name}
@@ -107,88 +113,130 @@ function App() {
     return renderConcept()
   }
 
+  const folderNav = categories // use all categories as nav
+
+  const activeCategoryObj = categories.find(c => c.id === activeCategory) || null
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-6 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
-            <BookOpen className="text-blue-600" size={48} />
-            Software Engineering Notebooks
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Interactive diagrams and explanations for common software engineering concepts.
-            Click on a category to explore visual guides for quick review and learning.
-          </p>
-        </div>
+        <div className="flex gap-8">
+          {/* Left navigation column (folders from src) */}
+          <aside className="hidden md:block w-64 bg-white rounded-lg shadow p-4">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">Notebooks</h2>
+            <nav className="space-y-2">
+              {folderNav.map(folder => {
+                const IconComponent = folder.icon
+                const isActive = activeCategory === folder.id
+                return (
+                  <button
+                    key={folder.id}
+                    onClick={() => {
+                      setActiveCategory(folder.id)
+                      setActiveConcept(null)
+                    }}
+                    className={`w-full flex items-center gap-3 p-2 rounded-md text-left transition-colors ${isActive ? 'bg-blue-50' : 'hover:bg-gray-50'}`}
+                  >
+                    <div className={`p-2 rounded-md bg-${folder.color}-100`}>
+                      <IconComponent className={`text-${folder.color}-600`} size={18} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-800">{folder.name}</div>
+                    </div>
+                    <ArrowRight className={`text-gray-400 ${isActive ? 'rotate-90' : ''}`} size={16} />
+                  </button>
+                )
+              })}
+            </nav>
+          </aside>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {categories.map((category) => {
-            const IconComponent = category.icon
-            const isActive = activeCategory === category.id
-            
-            return (
-              <div key={category.id} className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-                <div
-                  className={`p-6 cursor-pointer transition-colors ${
-                    isActive ? `bg-${category.color}-50 border-l-4 border-${category.color}-500` : 'hover:bg-gray-50'
-                  }`}
-                  onClick={() => handleCategoryClick(category.id)}
-                >
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className={`p-3 rounded-lg bg-${category.color}-100`}>
-                      <IconComponent className={`text-${category.color}-600`} size={32} />
+          {/* Main content area */}
+          <main className="flex-1">
+            {/* Top for small screens: nav selector */}
+            <div className="md:hidden mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Select Notebook</label>
+              <select
+                value={activeCategory ?? ''}
+                onChange={(e) => {
+                  const v = e.target.value || null
+                  setActiveCategory(v)
+                  setActiveConcept(null)
+                }}
+                className="w-full p-2 border rounded"
+              >
+                <option value="">-- Browse Notebooks --</option>
+                {categories.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* If a concept is selected, render it full-screen using existing renderConcept */}
+            {activeConcept ? renderConcept() : (
+              // If a category is selected, show that category page; otherwise show welcome
+              activeCategoryObj ? (
+                <div className="min-h-screen bg-gray-50 rounded-lg p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-800">{activeCategoryObj.name}</h2>
+                      <p className="text-gray-600 text-sm">{activeCategoryObj.description}</p>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-800">{category.name}</h3>
-                      <p className="text-gray-600 text-sm">{category.description}</p>
+                      <button
+                        onClick={() => { setActiveCategory(null); setActiveConcept(null) }}
+                        className="px-3 py-2 bg-gray-100 rounded text-sm"
+                      >Back</button>
                     </div>
-                    <ArrowRight 
-                      className={`ml-auto text-gray-400 transition-transform ${isActive ? 'rotate-90' : ''}`} 
-                      size={20} 
-                    />
+                  </div>
+
+                  <div>
+                    {activeCategoryObj.concepts.length > 0 ? (
+                      <div className="space-y-3">
+                        {activeCategoryObj.concepts.map(concept => (
+                          <div key={concept.id} className="bg-white p-4 rounded shadow-sm flex items-center justify-between">
+                            <div>
+                              <div className="font-medium text-gray-800">{concept.name}</div>
+                            </div>
+                            <div>
+                              <button
+                                onClick={() => handleConceptClick(concept.id)}
+                                className="px-3 py-2 bg-blue-600 text-white rounded"
+                              >Open</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <p className="text-gray-600">No concepts yet for this notebook.</p>
+                      </div>
+                    )}
                   </div>
                 </div>
-                
-                {isActive && (
-                  <div className="px-6 pb-6">
-                    <div className="border-t border-gray-200 pt-4">
-                      {category.concepts.length > 0 ? (
-                        <div className="space-y-2">
-                          {category.concepts.map((concept) => (
-                            <button
-                              key={concept.id}
-                              onClick={() => handleConceptClick(concept.id)}
-                              className={`w-full text-left p-3 rounded-lg transition-colors hover:bg-${category.color}-50 border border-gray-200 hover:border-${category.color}-300`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium text-gray-800">{concept.name}</span>
-                                <ArrowRight className="text-gray-400" size={16} />
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center py-4">
-                          <p className="text-gray-500 text-sm">Concepts coming soon...</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+              ) : (
+                <div className="text-center mb-12">
+                  <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
+                    <BookOpen className="text-blue-600" size={48} />
+                    Software Engineering Notebooks
+                  </h1>
+                  <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Interactive diagrams and explanations for common software engineering concepts.
+                    Use the left navigation to open a notebook and explore its concepts.
+                  </p>
+                </div>
+              )
+            )}
 
-        <div className="mt-12 text-center">
-          <div className="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">About This Project</h3>
-            <p className="text-gray-600 text-sm">
-              This is a collection of interactive React-based diagrams for software engineering concepts.
-              Each category contains visual explanations designed for quick review and learning.
-              More concepts and categories will be added over time.
-            </p>
-          </div>
+            <div className="mt-12 text-center">
+              <div className="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">About This Project</h3>
+                <p className="text-gray-600 text-sm">
+                  This is a collection of interactive React-based diagrams for software engineering concepts.
+                  Each notebook contains visual explanations designed for quick review and learning.
+                </p>
+              </div>
+            </div>
+          </main>
         </div>
       </div>
     </div>

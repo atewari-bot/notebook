@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Lock, Key, Shield, CheckCircle, ArrowRight } from 'lucide-react';
 
 const SSLHandshakeDiagram = () => {
