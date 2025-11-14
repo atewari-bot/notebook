@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Shield, Database, Cloud, Zap, BookOpen, ArrowRight } from 'lucide-react'
 import SSLHandshakeDiagram from './security/ssl_handshake'
-import HttpVerbsDiagram from './http/http-verbs-diagram'
+import HttpVerbsDiagram from './networking/http-verbs-diagram'
 import './App.css'
 
 function App() {
@@ -10,11 +10,11 @@ function App() {
 
   const categories = [
     {
-      id: 'http',
-      name: 'HTTP',
-      icon: Database,
+      id: 'networking',
+      name: 'Networking',
+      icon: Cloud,
       color: 'teal',
-      description: 'HTTP methods, status codes, request/response lifecycle',
+      description: 'HTTP, TCP/IP, routing and protocols',
       concepts: [
         { id: 'http_verbs', name: 'HTTP Verbs', component: HttpVerbsDiagram }
       ]
@@ -30,19 +30,11 @@ function App() {
       ]
     },
     {
-      id: 'cache',
-      name: 'Caching',
+      id: 'storage',
+      name: 'Storage',
       icon: Database,
       color: 'green',
-      description: 'Caching strategies, CDN, Redis, Memcached',
-      concepts: []
-    },
-    {
-      id: 'cloud',
-      name: 'Cloud',
-      icon: Cloud,
-      color: 'purple',
-      description: 'AWS, Azure, GCP, microservices, containers',
+      description: 'Caching, databases and persistence patterns',
       concepts: []
     },
     {
