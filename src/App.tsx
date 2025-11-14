@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Shield, Database, Cloud, Zap, BookOpen, ArrowRight } from 'lucide-react'
 import SSLHandshakeDiagram from './security/ssl_handshake'
 import HttpVerbsDiagram from './networking/http-verbs-diagram'
+import SSOGuide from './security/sso-interactive-guide'
 import './App.css'
 
 function App() {
@@ -26,7 +27,8 @@ function App() {
       color: 'blue',
       description: 'Security protocols, encryption, authentication',
       concepts: [
-        { id: 'ssl_handshake', name: 'SSL/TLS Handshake', component: SSLHandshakeDiagram }
+        { id: 'ssl_handshake', name: 'SSL/TLS Handshake', component: SSLHandshakeDiagram },
+        { id: 'sso_guide', name: 'Single Sign-On (SSO)', component: SSOGuide }
       ]
     },
     {
