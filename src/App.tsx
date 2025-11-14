@@ -19,7 +19,7 @@ function App() {
       description: 'HTTP, TCP/IP, routing and protocols',
       concepts: [
         { id: 'http_verbs', name: 'HTTP Verbs', component: HttpVerbsDiagram },
-        { id: 'multipart_voice', name: 'Multipart Voice Requests', component: MultipartVoiceGuide }
+        { id: 'multipart_voice', name: 'Multipart HTTP Request', component: MultipartVoiceGuide }
       ]
     },
     {
