@@ -4,6 +4,7 @@ import SSLHandshakeDiagram from './security/ssl_handshake'
 import HttpVerbsDiagram from './networking/http-verbs-diagram'
 import SSOGuide from './security/sso-interactive-guide'
 import MultipartVoiceGuide from './networking/multipart-voice-guide'
+import UpgradeProtocolWorkflow from './networking/upgrade_protocol_doc'
 import './App.css'
 
 function App() {
@@ -19,7 +20,8 @@ function App() {
       description: 'HTTP, TCP/IP, routing and protocols',
       concepts: [
         { id: 'http_verbs', name: 'HTTP Verbs', component: HttpVerbsDiagram },
-        { id: 'multipart_voice', name: 'Multipart HTTP Request', component: MultipartVoiceGuide }
+        { id: 'multipart_voice', name: 'Multipart HTTP Request', component: MultipartVoiceGuide },
+        { id: 'upgrade_protocol', name: 'HTTP Upgrade Protocol', component: UpgradeProtocolWorkflow }
       ]
     },
     {
